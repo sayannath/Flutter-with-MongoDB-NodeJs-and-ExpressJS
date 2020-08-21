@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:backend_app/main.dart';
+import 'package:backend_app/view/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
+  final scaffkey = new GlobalKey<ScaffoldState>();
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -44,26 +49,38 @@ class _LoginPageState extends State<LoginPage> {
     var jsonResponse = null;
 
     var response =
-        await http.post("http://192.168.1.56:3000/signin", body: data);
+        await http.post("http://192.168.1.4:3000/signin", body: data);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
+      print(jsonResponse['auth']);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['token']);
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-            (Route<dynamic> route) => false);
+        try {
+          sharedPreferences.setString("token", jsonResponse['token']);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+              (Route<dynamic> route) => false);
+        } catch (err) {
+          setState(() {
+            _isLoading = false;
+          });
+          print(response.body);
+          scaffkey.currentState.showSnackBar(new SnackBar(
+            content: new Text("Authentication faliure !! Please retry."),
+          ));
+        }
       }
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      print(response.body);
     }
+    // else {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    //   print(response.body);
+    // }
   }
 
   Container buttonSection() {
@@ -73,14 +90,9 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == ""
-            ? null
-            : () {
-                setState(() {
-                  _isLoading = true;
-                });
-                signIn(emailController.text, passwordController.text);
-              },
+        onPressed: () {
+          signIn(emailController.text, passwordController.text);
+        },
         elevation: 0.0,
         color: Colors.purple,
         child: Text("Sign In", style: TextStyle(color: Colors.white70)),
@@ -88,9 +100,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
 
   Container textSection() {
     return Container(

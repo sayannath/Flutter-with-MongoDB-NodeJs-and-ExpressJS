@@ -1,3 +1,4 @@
+import 'package:backend_app/view/homePage.dart';
 import 'package:backend_app/view/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,19 +11,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Backend App',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SplashScreen(),
       theme: ThemeData.dark(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _SplashScreenState extends State<SplashScreen> {
   SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
 
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -30,60 +37,25 @@ class _HomePageState extends State<HomePage> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
           (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          (Route<dynamic> route) => false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Product'),
-          centerTitle: true,
-          actions: [
-            FlatButton(
-              onPressed: () {
-                sharedPreferences.clear();
-                sharedPreferences.commit();
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => LoginPage()),
-                    (Route<dynamic> route) => false);
-              },
-              child: Icon(Icons.power_settings_new),
-            )
-          ],
-        ),
-        body: Center(
-          child: Text('Main Body'),
-        ),
-        drawer: Drawer(
-          child: ListView(children: <Widget>[
-            UserAccountsDrawerHeader(
-                accountName: Text('NodeJs'), accountEmail: Text('Email')),
-            ListTile(
-              title: Text('List Products'),
-              trailing: Icon(Icons.list),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Text('Add Products'),
-              trailing: Icon(Icons.add),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Text('Register user'),
-              trailing: Icon(Icons.add),
-              onTap: () {},
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Close'),
-              trailing: Icon(Icons.clear),
-              onTap: (){
-                Navigator.of(context).pop();
-              },
-            )
-          ]),
-        ));
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Container(
+            decoration: BoxDecoration(color: Colors.black),
+            child: Text(
+              'Splash Screen',
+              style: TextStyle(color: Colors.white, fontSize: 30),
+            )),
+      ),
+    );
   }
 }
