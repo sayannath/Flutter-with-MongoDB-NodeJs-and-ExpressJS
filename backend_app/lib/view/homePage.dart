@@ -1,3 +1,5 @@
+import 'package:backend_app/view/addProducts.dart';
+import 'package:backend_app/view/listProduct.dart';
 import 'package:backend_app/view/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,7 +13,7 @@ class _HomePageState extends State<HomePage> {
   SharedPreferences sharedPreferences;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     checkLoginStatus();
   }
@@ -51,27 +53,33 @@ class _HomePageState extends State<HomePage> {
         drawer: Drawer(
           child: ListView(children: <Widget>[
             UserAccountsDrawerHeader(
-                accountName: Text('NodeJs'), accountEmail: Text('Email')),
+                accountName: Text('Sayan Nath'),
+                accountEmail: Text('sayannath235@gmail.com')),
             ListTile(
               title: Text('List Products'),
               trailing: Icon(Icons.list),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return ListProducts();
+                }));
+              },
             ),
             ListTile(
               title: Text('Add Products'),
-              trailing: Icon(Icons.add),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Text('Register user'),
-              trailing: Icon(Icons.add),
-              onTap: () {},
+              trailing: Icon(Icons.add_box),
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return AddDataProduct();
+                }));
+              },
             ),
             Divider(),
             ListTile(
               title: Text('Close'),
               trailing: Icon(Icons.clear),
-              onTap: (){
+              onTap: () {
                 Navigator.of(context).pop();
               },
             )

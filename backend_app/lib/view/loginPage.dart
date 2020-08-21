@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.black));
     return Scaffold(
+      key: scaffkey,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -75,12 +76,6 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
-    // else {
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    //   print(response.body);
-    // }
   }
 
   Container buttonSection() {
