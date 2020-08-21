@@ -12,52 +12,53 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.black));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.black));
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.blue, Colors.teal],
+              colors: [Colors.black, Colors.black45],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
         ),
-        child: _isLoading ? Center(child: CircularProgressIndicator()) : ListView(
-          children: <Widget>[
-            headerSection(),
-            textSection(),
-            buttonSection(),
-          ],
-        ),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
+                children: <Widget>[
+                  headerSection(),
+                  textSection(),
+                  buttonSection(),
+                ],
+              ),
       ),
     );
   }
 
   signIn(String email, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    Map data = {
-      'email': email,
-      'password': pass
-    };
+    Map data = {'email': email, 'password': pass};
     var jsonResponse = null;
 
-    var response = await http.post("http://192.168.1.56:3000/signin", body: data);
-    if(response.statusCode == 200) {
+    var response =
+        await http.post("http://192.168.1.56:3000/signin", body: data);
+    if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      if(jsonResponse != null) {
+      if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
         sharedPreferences.setString("token", jsonResponse['token']);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomePage()), (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+            (Route<dynamic> route) => false);
       }
-    }
-    else {
+    } else {
       setState(() {
         _isLoading = false;
       });
@@ -72,12 +73,14 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == "" ? null : () {
-          setState(() {
-            _isLoading = true;
-          });
-          signIn(emailController.text, passwordController.text);
-        },
+        onPressed: emailController.text == "" || passwordController.text == ""
+            ? null
+            : () {
+                setState(() {
+                  _isLoading = true;
+                });
+                signIn(emailController.text, passwordController.text);
+              },
         elevation: 0.0,
         color: Colors.purple,
         child: Text("Sign In", style: TextStyle(color: Colors.white70)),
@@ -97,12 +100,12 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
             controller: emailController,
             cursorColor: Colors.white,
-
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.white70),
               hintText: "Email",
-              border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
             ),
           ),
@@ -115,7 +118,8 @@ class _LoginPageState extends State<LoginPage> {
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
               hintText: "Password",
-              border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
             ),
           ),
@@ -128,12 +132,11 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       margin: EdgeInsets.only(top: 50.0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("App NodeJs Mongodb Login",
+      child: Text("Login",
           style: TextStyle(
               color: Colors.white70,
               fontSize: 40.0,
               fontWeight: FontWeight.bold)),
     );
   }
-
 }

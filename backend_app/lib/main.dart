@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        body: Container(
+        body: Center(
           child: Text('Main Body'),
         ),
         drawer: Drawer(
@@ -74,6 +74,14 @@ class _HomePageState extends State<HomePage> {
               title: Text('Register user'),
               trailing: Icon(Icons.add),
               onTap: () {},
+            ),
+            Divider(),
+            ListTile(
+              title: Text('Close'),
+              trailing: Icon(Icons.clear),
+              onTap: (){
+                Navigator.of(context).pop();
+              },
             )
           ]),
         ));
